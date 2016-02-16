@@ -16,7 +16,7 @@ const DEFAULT_TOLERANCE = 0.0008;
 
 export function simplify(
   filename,
-  outputFolder = `${__dirname}/../output`,
+  outputDir = `${__dirname}/../output`,
   { tolerance, outputFormat } = { tolerance: DEFAULT_TOLERANCE }) {
   // gpxParse.parseGpxFromFile(filename, (error, data) => {
   //   // console.log(JSON.stringify(data, null, 4));
@@ -56,9 +56,9 @@ export function simplify(
 
 
   // Create file structure for
-  const commonPath = commonPathPrefix([outputFolder, filename]);
+  const commonPath = commonPathPrefix([outputDir, filename]);
   const fileBaseName = path.basename(filename, '.gpx');
-  const fileDir = path.dirname(path.join(outputFolder, filename.substring(commonPath.length)));
+  const fileDir = path.dirname(path.join(outputDir, filename.substring(commonPath.length)));
   const fileNameNoExt = path.join(fileDir, fileBaseName);
 
   const writeFilePromisified = Promise.promisify(fs.writeFile);
