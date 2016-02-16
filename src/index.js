@@ -24,9 +24,9 @@ export function simplify(
   //
   // });
 
-  const gpxParsed = jsdom(fs.readFileSync(filename, 'utf8'));
+  let gpxParsed = jsdom(fs.readFileSync(filename, 'utf8'));
   const geoJSON = gpx(gpxParsed);
-
+  gpxParsed = {};
 
   geoJSON.features.forEach((geoJsonFeature) => {
     const lengthBefore = geoJsonFeature.properties.coordTimes.length;
@@ -35,6 +35,8 @@ export function simplify(
     geoJsonFeature.properties.coordTimes.forEach((time, index) => {
       geoJsonFeature.geometry.coordinates[index].push(time);
     });
+    geoJsonFeature.properties.coordTimes = [];
+
     // console.log(JSON.stringify(geoJsonFeature, null, 4));
     const coord = geoJsonFeature.geometry.coordinates;
 
