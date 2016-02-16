@@ -8,6 +8,7 @@ import togpx from 'togpx';
 import commonPathPrefix from 'common-path-prefix';
 import mkdirp from 'mkdirp';
 import path from 'path';
+import Promise from 'bluebird';
 
 const DEFAULT_TOLERANCE = 0.0008;
 
@@ -23,6 +24,7 @@ export function simplify(
 
   const gpxParsed = jsdom(fs.readFileSync(filename, 'utf8'));
   const geoJSON = gpx(gpxParsed);
+
 
   const lengthBefore = geoJSON.features[0].properties.coordTimes.length;
 
@@ -54,19 +56,37 @@ export function simplify(
   const fileDir = path.dirname(path.join(outputFolder, filename.substring(commonPath.length)));
   const fileNameNoExt = path.join(fileDir, fileBaseName);
 
+  Promise.promisify(fs.writeFile);
+  Promise.promisify(mkdirp);
+
+  mkdirp.sync(fileDir);
+
+  switch (outputFormat) {
+    case 'gpx':
+      return fs.writeFile(`${fileNameNoExt}.gpx`, togpx(geoJSON));
+    default:
+      return fs.writeFile(`${fileNameNoExt}.json`, JSON.stringify(geoJSON, null, 4));
+  }
+
   // console.log('fileNameNoExt', fileNameNoExt);
-  mkdirp(fileDir, (err) => {
-    if (err) {
-      console.error('ERROR', err);
-    } else {
-      switch (outputFormat) {
-        case 'gpx':
-          fs.writeFileSync(`${fileNameNoExt}.gpx`, togpx(geoJSON));
-          break;
-        default:
-          fs.writeFileSync(`${fileNameNoExt}.json`, JSON.stringify(geoJSON, null, 4));
-          break;
-      }
-    }
-  });
+  // const deferred = Promise.pending();
+  // mkdirp(fileDir, (err) => {
+  //   if (err) {
+  //     console.error('ERROR', err);
+  //   } else {
+  //     switch (outputFormat) {
+  //       case 'gpx':
+  //         fs.writeFileSync(`${fileNameNoExt}.gpx`, togpx(geoJSON));
+  //         deferred.resolve();
+  //         break;
+  //       default:
+  //         console.log('WRITE FILE');
+  //         fs.writeFileSync(`${fileNameNoExt}.json`, JSON.stringify(geoJSON, null, 4));
+  //         console.log('FILE WRITTEN');
+  //         deferred.resolve();
+  //         break;
+  //     }
+  //   }
+  // });
+  // return deferred.promise;
 }
