@@ -1,6 +1,5 @@
 import { simplify } from './index.js';
 import commandLineArgs from 'command-line-args';
-import Promise from 'bluebird';
 
 const cli = commandLineArgs([
   { name: 'files', alias: 'f', type: String, multiple: true },
@@ -36,9 +35,4 @@ function seqPromises(i) {
     console.log('All done!');
   }
 }
-
 seqPromises(0);
-
-// Promise.all(Promises).then(() => {
-//
-// });

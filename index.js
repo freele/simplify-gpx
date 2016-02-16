@@ -28,29 +28,32 @@ export function simplify(
   const geoJSON = gpx(gpxParsed);
 
 
-  const lengthBefore = geoJSON.features[0].properties.coordTimes.length;
+  geoJSON.features.forEach((geoJsonFeature) => {
+    const lengthBefore = geoJsonFeature.properties.coordTimes.length;
 
-  // Tweak points to preserve time during optimisation
-  geoJSON.features[0].properties.coordTimes.forEach((time, index) => {
-    geoJSON.features[0].geometry.coordinates[index].push(time);
+    // Tweak points to preserve time during optimisation
+    geoJsonFeature.properties.coordTimes.forEach((time, index) => {
+      geoJsonFeature.geometry.coordinates[index].push(time);
+    });
+    // console.log(JSON.stringify(geoJsonFeature, null, 4));
+    const coord = geoJsonFeature.geometry.coordinates;
+
+    // console.log('one', JSON.stringify(coord, null, 4));
+    // debug optimisation
+    const simplifiedCoordinates = simplifyGeometry(coord, tolerance);
+    // console.log('two', JSON.stringify(simplifiedCoordinates, null, 4));
+
+    // Return time to separate array
+    geoJsonFeature.properties.coordTimes = simplifiedCoordinates.map((arrayWithCoords) => {
+      // console.log(arrayWithCoords);
+      return arrayWithCoords.pop();
+    });
+    geoJsonFeature.geometry.coordinates = simplifiedCoordinates;
+    const lengthAfter = geoJsonFeature.properties.coordTimes.length;
+    const compression = (lengthAfter / lengthBefore).toFixed(3);
+    console.log({ lengthBefore, lengthAfter, compression });
   });
-  // console.log(JSON.stringify(geoJSON.features[0], null, 4));
-  const coord = geoJSON.features[0].geometry.coordinates;
 
-  // console.log('one', JSON.stringify(coord, null, 4));
-  // debug optimisation
-  const simplifiedCoordinates = simplifyGeometry(coord, tolerance);
-  // console.log('two', JSON.stringify(simplifiedCoordinates, null, 4));
-
-  // Return time to separate array
-  geoJSON.features[0].properties.coordTimes = simplifiedCoordinates.map((arrayWithCoords) => {
-    // console.log(arrayWithCoords);
-    return arrayWithCoords.pop();
-  });
-  geoJSON.features[0].geometry.coordinates = simplifiedCoordinates;
-  const lengthAfter = geoJSON.features[0].properties.coordTimes.length;
-  const compression = (lengthAfter / lengthBefore).toFixed(3);
-  console.log({ lengthBefore, lengthAfter, compression });
 
   // Create file structure for
   const commonPath = commonPathPrefix([outputFolder, filename]);
