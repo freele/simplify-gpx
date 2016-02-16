@@ -26,10 +26,13 @@
   "homepage": "https://github.com/freele/simplify-gpx#readme",
   "dependencies": {
     "command-line-args": "^2.1.6",
+    "common-path-prefix": "^1.0.0",
     "gpx-parse": "^0.10.3",
     "jsdom": "^8.0.2",
+    "mkdirp": "^0.5.1",
     "simplify-geometry": "0.0.2",
-    "togeojson": "^0.13.0"
+    "togeojson": "^0.13.0",
+    "togpx": "^0.4.0"
   },
   "devDependencies": {
     "babel-eslint": "^4.1.8",

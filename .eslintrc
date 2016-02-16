@@ -5,6 +5,7 @@
     "no-param-reassign": [2, {"props": false}],
     "no-labels": 0,
     "no-empty-label": 0,
-    "arrow-body-style": [2, "always"]
+    "arrow-body-style": [2, "always"],
+    "max-len": 0
   }
 }
