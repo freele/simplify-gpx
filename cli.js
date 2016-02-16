@@ -14,8 +14,31 @@ const options = cli.parse();
 //   simplify(file, options['output-folder']);
 // });
 
-Promise.mapSeries([options.files[0], options.files[1]], (file) => {
-  simplify(file, options['output-folder']);
-}).then(() => {
-  console.log('All done!');
+// Promise.mapSeries(options.files, (file) => {
+//   simplify(file, options['output-folder']);
+// }).then(() => {
+//   console.log('All done!');
+// });
+
+const Promises = options.files.map((file) => {
+  return () => {
+    return simplify(file, options['output-folder']);
+  };
 });
+
+const length = Promises.length;
+function seqPromises(i) {
+  if (i < length) {
+    Promises[i]().then(() => {
+      seqPromises(i + 1);
+    });
+  } else {
+    console.log('All done!');
+  }
+}
+
+seqPromises(0);
+
+// Promise.all(Promises).then(() => {
+//
+// });

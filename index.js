@@ -10,6 +10,8 @@ import mkdirp from 'mkdirp';
 import path from 'path';
 import Promise from 'bluebird';
 
+let counter = 0;
+
 const DEFAULT_TOLERANCE = 0.0008;
 
 export function simplify(
@@ -56,37 +58,17 @@ export function simplify(
   const fileDir = path.dirname(path.join(outputFolder, filename.substring(commonPath.length)));
   const fileNameNoExt = path.join(fileDir, fileBaseName);
 
-  Promise.promisify(fs.writeFile);
+  const writeFilePromisified = Promise.promisify(fs.writeFile);
   Promise.promisify(mkdirp);
 
   mkdirp.sync(fileDir);
 
   switch (outputFormat) {
     case 'gpx':
-      return fs.writeFile(`${fileNameNoExt}.gpx`, togpx(geoJSON));
+      return writeFilePromisified(`${fileNameNoExt}.gpx`, togpx(geoJSON));
     default:
-      return fs.writeFile(`${fileNameNoExt}.json`, JSON.stringify(geoJSON, null, 4));
+      return writeFilePromisified(`${fileNameNoExt}.json`, JSON.stringify(geoJSON, null, 4)).then(() => {
+        console.log('file written ', counter++);
+      });
   }
-
-  // console.log('fileNameNoExt', fileNameNoExt);
-  // const deferred = Promise.pending();
-  // mkdirp(fileDir, (err) => {
-  //   if (err) {
-  //     console.error('ERROR', err);
-  //   } else {
-  //     switch (outputFormat) {
-  //       case 'gpx':
-  //         fs.writeFileSync(`${fileNameNoExt}.gpx`, togpx(geoJSON));
-  //         deferred.resolve();
-  //         break;
-  //       default:
-  //         console.log('WRITE FILE');
-  //         fs.writeFileSync(`${fileNameNoExt}.json`, JSON.stringify(geoJSON, null, 4));
-  //         console.log('FILE WRITTEN');
-  //         deferred.resolve();
-  //         break;
-  //     }
-  //   }
-  // });
-  // return deferred.promise;
 }
