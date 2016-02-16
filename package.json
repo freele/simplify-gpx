@@ -1,0 +1,41 @@
+{
+  "name": "simplify-gpx",
+  "version": "1.0.0",
+  "description": "Simplify gpx tracks by simplifying geometry using simplify-geometry (Ramer–Douglas–Peucker algorithm)",
+  "main": "index.js",
+  "scripts": {
+    "start": "babel-node cli.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/freele/simplify-gpx.git"
+  },
+  "keywords": [
+    "gpx",
+    "geojson",
+    "geometry",
+    "gis",
+    "track"
+  ],
+  "author": "Alexander Kremenets",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/freele/simplify-gpx/issues"
+  },
+  "homepage": "https://github.com/freele/simplify-gpx#readme",
+  "dependencies": {
+    "command-line-args": "^2.1.6",
+    "gpx-parse": "^0.10.3",
+    "jsdom": "^8.0.2",
+    "simplify-geometry": "0.0.2",
+    "togeojson": "^0.13.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^4.1.8",
+    "babel-preset-es2015": "^6.5.0",
+    "eslint": "^1.0.0",
+    "eslint-config-airbnb": "^5.0.1",
+    "eslint-plugin-react": "^3.16.1"
+  }
+}
