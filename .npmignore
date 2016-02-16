@@ -1,0 +1,10 @@
+.babelrc
+.dockerignore
+.env
+.eslintrc
+.eslintignore
+Dockerfile
+Makefile
+src
+.git
+app

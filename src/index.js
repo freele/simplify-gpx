@@ -16,7 +16,7 @@ const DEFAULT_TOLERANCE = 0.0008;
 
 export function simplify(
   filename,
-  outputFolder = `${__dirname}/output`,
+  outputFolder = `${__dirname}/../output`,
   { tolerance, outputFormat } = { tolerance: DEFAULT_TOLERANCE }) {
   // gpxParse.parseGpxFromFile(filename, (error, data) => {
   //   // console.log(JSON.stringify(data, null, 4));
