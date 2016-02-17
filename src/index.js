@@ -14,7 +14,8 @@ const DEFAULT_TOLERANCE = 0.0008;
 export function simplify(
   { inputFilename,
    outputFilename,
-   tolerance, outputFormat } = { tolerance: DEFAULT_TOLERANCE }) {
+   tolerance = DEFAULT_TOLERANCE,
+   outputFormat }) {
   // gpxParse.parseGpxFromFile(filename, (error, data) => {
   //   // console.log(JSON.stringify(data, null, 4));
   //
@@ -32,7 +33,6 @@ export function simplify(
     geoJsonFeature.properties.coordTimes.forEach((time, index) => {
       geoJsonFeature.geometry.coordinates[index].push(time);
     });
-    geoJsonFeature.properties.coordTimes = [];
 
     // console.log(JSON.stringify(geoJsonFeature, null, 4));
     const coord = geoJsonFeature.geometry.coordinates;
@@ -61,7 +61,7 @@ export function simplify(
       return writeFilePromisified(outputFilename, togpx(geoJSON));
     default:
       return writeFilePromisified(outputFilename, JSON.stringify(geoJSON, null, 4)).then(() => {
-        console.log('file written ', counter++);
+        console.log('file written ', outputFilename, counter++);
       });
   }
 }
