@@ -5,9 +5,6 @@ import { jsdom } from 'jsdom';
 import fs from 'fs';
 import simplifyGeometry from 'simplify-geometry';
 import togpx from 'togpx';
-import commonPathPrefix from 'common-path-prefix';
-import mkdirp from 'mkdirp';
-import path from 'path';
 import Promise from 'bluebird';
 
 let counter = 0;
@@ -15,16 +12,16 @@ let counter = 0;
 const DEFAULT_TOLERANCE = 0.0008;
 
 export function simplify(
-  filename,
-  outputDir = `${__dirname}/../output`,
-  { tolerance, outputFormat } = { tolerance: DEFAULT_TOLERANCE }) {
+  { inputFilename,
+   outputFilename,
+   tolerance, outputFormat } = { tolerance: DEFAULT_TOLERANCE }) {
   // gpxParse.parseGpxFromFile(filename, (error, data) => {
   //   // console.log(JSON.stringify(data, null, 4));
   //
   //
   // });
 
-  let gpxParsed = jsdom(fs.readFileSync(filename, 'utf8'));
+  let gpxParsed = jsdom(fs.readFileSync(inputFilename, 'utf8'));
   const geoJSON = gpx(gpxParsed);
   gpxParsed = {};
 
@@ -56,24 +53,16 @@ export function simplify(
     console.log({ lengthBefore, lengthAfter, compression });
   });
 
-
-  // Create file structure for
-  const commonPath = commonPathPrefix([outputDir, filename]);
-  const fileBaseName = path.basename(filename, '.gpx');
-  const fileDir = path.dirname(path.join(outputDir, filename.substring(commonPath.length)));
-  const fileNameNoExt = path.join(fileDir, fileBaseName);
-
   const writeFilePromisified = Promise.promisify(fs.writeFile);
-  Promise.promisify(mkdirp);
 
-  mkdirp.sync(fileDir);
 
   switch (outputFormat) {
     case 'gpx':
-      return writeFilePromisified(`${fileNameNoExt}.gpx`, togpx(geoJSON));
+      return writeFilePromisified(outputFilename, togpx(geoJSON));
     default:
-      return writeFilePromisified(`${fileNameNoExt}.json`, JSON.stringify(geoJSON, null, 4)).then(() => {
+      return writeFilePromisified(outputFilename, JSON.stringify(geoJSON, null, 4)).then(() => {
         console.log('file written ', counter++);
       });
   }
 }
+
