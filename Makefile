@@ -8,6 +8,9 @@ simplify-node:
 	node --max-old-space-size=6048 lib/cli.js --no-overwrite --input-dir $(filter-out $@,$(MAKECMDGOALS))
 	# babel-node cli.js --output sdf -f $(find /Users/kremenets/Dev/Strelka/Mathrioshka/gpx-planet-2013-04-09/identifiable/000/104/ -type f)
 
+psql-connect:
+	psql -d gis -h 192.168.99.100 -p 25432 -U docker
+
 %: ;
 
 .PHONY: simplify simplify-node
